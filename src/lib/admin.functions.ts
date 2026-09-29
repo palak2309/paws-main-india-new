@@ -44,12 +44,22 @@ export interface Member {
 export type Ctx = { supabase: SupabaseClient<Database>; userId: string };
 
 export async function roleOf(context: Ctx): Promise<AppRole> {
-  const { data } = await context.supabase
+  const { supabaseAdmin } = await import(
+    "@/integrations/supabase/client.server"
+  );
+
+  const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
     .eq("user_id", context.userId)
     .limit(1)
     .maybeSingle();
+
+  if (error) {
+    console.error("[Admin] Failed to load user role:", error);
+    throw new Error(`Could not load user role: ${error.message}`);
+  }
+
   return ((data as { role?: AppRole } | null)?.role ?? "viewer") as AppRole;
 }
 
