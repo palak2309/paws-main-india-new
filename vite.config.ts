@@ -1,15 +1,34 @@
-// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
-// or the app will break with duplicate plugins:
-//   - TanStack devtools (dev-only, first), tanstackStart, viteReact, tailwindcss, tsConfigPaths,
-//     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
-//     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
-// You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+// @lovable.dev/vite-tanstack-config already includes the required TanStack/Vite plugins.
+// Keep this wrapper to preserve the current local/Lovable setup.
+
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
+
 export default defineConfig({
-  tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
+  // GitHub Pages is static hosting, so the Pages build uses TanStack Start SPA mode
+  // and prerenders a static shell. Local/Render builds keep the server build.
+  nitro: isGitHubPages ? false : undefined,
+
+  vite: {
+    // Repository Pages uses /paws-main-india-new/. When we later attach the
+    // custom domain, this automatically becomes "/" for that deployment.
+    base: isGitHubPages ? "/paws-main-india-new/" : "/",
   },
+
+  tanstackStart: isGitHubPages
+    ? {
+        spa: {
+          enabled: true,
+          prerender: {
+            outputPath: "/index.html",
+            crawlLinks: false,
+            retryCount: 2,
+            failOnError: true,
+          },
+        },
+      }
+    : {
+        server: { entry: "server" },
+      },
 });
