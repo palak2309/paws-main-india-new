@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp } from "lucide-react";
 
 export function AuthLayout({
   title,
@@ -21,9 +21,7 @@ export function AuthLayout({
         <div className="grid-pattern absolute inset-0 opacity-20" />
         <div className="relative flex h-full flex-col justify-between p-12 text-primary-foreground">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="grid size-9 place-items-center rounded-xl bg-white/15 backdrop-blur">
-              <ShieldCheck className="size-5" />
-            </div>
+            <img src="/logo.png" alt="AutoAudit" className="size-9 rounded-xl object-contain" />
             <span className="text-sm font-semibold">AutoAudit</span>
           </Link>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -61,9 +59,7 @@ export function AuthLayout({
           className="relative w-full max-w-md"
         >
           <Link to="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
-            <div className="gradient-brand grid size-9 place-items-center rounded-xl">
-              <ShieldCheck className="size-5 text-primary-foreground" />
-            </div>
+            <img src="/logo.png" alt="AutoAudit" className="size-9 rounded-xl object-contain" />
             <span className="text-sm font-semibold">AutoAudit</span>
           </Link>
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>

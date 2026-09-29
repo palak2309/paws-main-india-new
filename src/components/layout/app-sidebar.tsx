@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "motion/react";
-import { ChevronsUpDown, ShieldCheck, Sparkles, X } from "lucide-react";
+import { ChevronsUpDown, Sparkles, X } from "lucide-react";
 import { navGroups } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 import { currency } from "@/lib/format";
@@ -22,9 +22,7 @@ import { getDurableMetrics } from "@/lib/leak.functions";
 export function BrandMark({ compact }: { compact?: boolean }) {
   return (
     <div className="flex min-w-0 items-center gap-2.5">
-      <div className="gradient-brand grid size-9 shrink-0 place-items-center rounded-xl shadow-soft">
-        <ShieldCheck className="size-5 text-primary-foreground" />
-      </div>
+      <img src="/logo.png" alt="AutoAudit" className="size-9 shrink-0 rounded-xl object-contain" />
       {!compact && (
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold tracking-tight">AutoAudit</p>
