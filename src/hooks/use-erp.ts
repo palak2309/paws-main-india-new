@@ -18,6 +18,7 @@ export function useErpOverview() {
   return useQuery({
     queryKey: ["erp", "overview"],
     queryFn: () => fetchOverview(),
+    placeholderData: (previousData) => previousData,
     staleTime: 30_000,
   });
 }

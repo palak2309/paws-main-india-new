@@ -57,6 +57,7 @@ function DashboardPage() {
   const { data: durableMetrics, isLoading: isMetricsLoading, refetch: refetchMetrics } = useQuery({
     queryKey: ["durable-metrics"],
     queryFn: () => fetchMetrics(),
+    placeholderData: (previousData) => previousData,
     staleTime: 30_000,
   });
 
