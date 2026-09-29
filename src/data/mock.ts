@@ -1,0 +1,370 @@
+import type {
+  AiInsight,
+  AlertItem,
+  AppUser,
+  Contract,
+  FinancialLeak,
+  Invoice,
+  Payment,
+  RecoveryCase,
+  SessionRecord,
+  Transaction,
+  Vendor,
+} from "@/types";
+
+export const kpis = {
+  financialHealthScore: 78,
+  potentialSavings: 4_182_500,
+  moneyRecovered: 1_264_900,
+  aiRiskScore: 34,
+  activeAlerts: 27,
+  fraudAlerts: 4,
+  leaksDetected: 312,
+  transactionsScanned: 1_842_665,
+  recoveryRate: 62,
+  avgResolutionDays: 11,
+};
+
+export const savingsTrend = [
+  { month: "Jan", detected: 210, recovered: 92 },
+  { month: "Feb", detected: 268, recovered: 121 },
+  { month: "Mar", detected: 312, recovered: 168 },
+  { month: "Apr", detected: 288, recovered: 190 },
+  { month: "May", detected: 401, recovered: 232 },
+  { month: "Jun", detected: 372, recovered: 261 },
+  { month: "Jul", detected: 455, recovered: 298 },
+  { month: "Aug", detected: 512, recovered: 344 },
+];
+
+export const leakBreakdown = [
+  { name: "Duplicate Payment", value: 1_240_000 },
+  { name: "Vendor Overcharge", value: 890_000 },
+  { name: "Subscription Waste", value: 612_000 },
+  { name: "Tax Error", value: 508_000 },
+  { name: "Contract Violation", value: 432_000 },
+  { name: "Fraud Indicator", value: 300_500 },
+];
+
+export const riskRadar = [
+  { area: "Payments", score: 82 },
+  { area: "Vendors", score: 64 },
+  { area: "Contracts", score: 71 },
+  { area: "Tax", score: 48 },
+  { area: "Subscriptions", score: 57 },
+  { area: "Payroll", score: 39 },
+];
+
+export const anomalyByDay = [
+  { day: "Mon", anomalies: 18, baseline: 12 },
+  { day: "Tue", anomalies: 24, baseline: 13 },
+  { day: "Wed", anomalies: 15, baseline: 12 },
+  { day: "Thu", anomalies: 31, baseline: 14 },
+  { day: "Fri", anomalies: 42, baseline: 15 },
+  { day: "Sat", anomalies: 9, baseline: 6 },
+  { day: "Sun", anomalies: 6, baseline: 5 },
+];
+
+export const financialLeaks: FinancialLeak[] = [
+  {
+    id: "LK-10421",
+    title: "Invoice INV-88213 paid twice within 6 days",
+    category: "Duplicate Payment",
+    vendor: "Northwind Logistics",
+    amount: 148_320,
+    currency: "USD",
+    severity: "critical",
+    status: "investigating",
+    confidence: 0.97,
+    detectedAt: "2026-08-04",
+    source: "SAP S/4HANA",
+    aiExplanation:
+      "Two ACH disbursements of $148,320 reference the same vendor invoice number with a 6-day gap. The second payment was created from a re-uploaded invoice PDF with an altered internal document ID, bypassing the standard duplicate check.",
+    recommendation: "File a recovery claim with Northwind and enable fuzzy invoice-number matching on ACH runs.",
+  },
+  {
+    id: "LK-10398",
+    title: "Contracted rate exceeded on 42 line items",
+    category: "Vendor Overcharge",
+    vendor: "Helix Cloud Services",
+    amount: 96_740,
+    currency: "USD",
+    severity: "high",
+    status: "recovering",
+    confidence: 0.91,
+    detectedAt: "2026-08-02",
+    source: "NetSuite",
+    aiExplanation:
+      "Unit prices billed exceed the master service agreement rate card by 8-14% across 42 line items in Q2. The overage began the month after an unsigned amendment was circulated.",
+    recommendation: "Request a credit memo of $96,740 and lock rate-card validation into invoice intake.",
+  },
+  {
+    id: "LK-10377",
+    title: "VAT applied at 20% on zero-rated exports",
+    category: "Tax Error",
+    vendor: "Meridian Freight",
+    amount: 61_205,
+    currency: "USD",
+    severity: "high",
+    status: "new",
+    confidence: 0.88,
+    detectedAt: "2026-08-01",
+    source: "Oracle Fusion",
+    aiExplanation:
+      "Shipments coded as intra-EU exports were taxed at the domestic standard rate. The tax determination rule was not updated after the entity's jurisdiction change in March.",
+    recommendation: "Reclaim overpaid VAT and correct the tax determination matrix for entity EU-02.",
+  },
+  {
+    id: "LK-10344",
+    title: "312 inactive SaaS seats billed for 9 months",
+    category: "Subscription Waste",
+    vendor: "Atlas Analytics",
+    amount: 54_180,
+    currency: "USD",
+    severity: "medium",
+    status: "new",
+    confidence: 0.84,
+    detectedAt: "2026-07-29",
+    source: "Coupa",
+    aiExplanation:
+      "License telemetry shows 312 provisioned seats with zero logins over 270 days while invoices continued at full commitment tier.",
+    recommendation: "Downgrade to the 900-seat tier at renewal; projected annual saving $72k.",
+  },
+  {
+    id: "LK-10322",
+    title: "Split purchase orders below approval threshold",
+    category: "Fraud Indicator",
+    vendor: "Cobalt Industrial",
+    amount: 88_900,
+    currency: "USD",
+    severity: "critical",
+    status: "investigating",
+    confidence: 0.93,
+    detectedAt: "2026-07-27",
+    source: "SAP S/4HANA",
+    aiExplanation:
+      "Nine purchase orders of $9,850-$9,990 were raised by the same requester within 72 hours, each landing just under the $10,000 approval threshold, all to a vendor added 41 days ago.",
+    recommendation: "Escalate to the fraud committee and freeze vendor payments pending review.",
+  },
+  {
+    id: "LK-10310",
+    title: "Duplicate invoice submitted under new PO",
+    category: "Duplicate Invoice",
+    vendor: "Vertex Consulting",
+    amount: 42_500,
+    currency: "USD",
+    severity: "medium",
+    status: "recovered",
+    confidence: 0.95,
+    detectedAt: "2026-07-24",
+    source: "NetSuite",
+    aiExplanation:
+      "Line items, dates and totals match invoice INV-77120 with 99% similarity, resubmitted under a different purchase order reference.",
+    recommendation: "Recovered via offset against the September statement.",
+  },
+  {
+    id: "LK-10288",
+    title: "SLA credits never claimed for 3 outages",
+    category: "Contract Violation",
+    vendor: "Helix Cloud Services",
+    amount: 33_400,
+    currency: "USD",
+    severity: "medium",
+    status: "new",
+    confidence: 0.79,
+    detectedAt: "2026-07-21",
+    source: "Manual Upload",
+    aiExplanation:
+      "Three incidents breached the 99.95% uptime clause. The contract entitles a 10% monthly service credit that was never invoiced back.",
+    recommendation: "Submit SLA credit claim for the affected billing periods.",
+  },
+  {
+    id: "LK-10265",
+    title: "Freight surcharge spike vs. 12-month baseline",
+    category: "Spend Anomaly",
+    vendor: "Meridian Freight",
+    amount: 27_650,
+    currency: "USD",
+    severity: "low",
+    status: "dismissed",
+    confidence: 0.68,
+    detectedAt: "2026-07-18",
+    source: "Oracle Fusion",
+    aiExplanation:
+      "Fuel surcharge lines are 3.4 standard deviations above the trailing baseline for comparable lanes.",
+    recommendation: "Dismissed — validated against the published fuel index for the period.",
+  },
+];
+
+export const aiInsights: AiInsight[] = [
+  {
+    id: "AI-501",
+    title: "Duplicate payment pattern concentrated in ACH run #418",
+    summary:
+      "Six of the last eleven duplicate payments originated from the Thursday ACH batch, where invoices re-uploaded after rejection skip the duplicate hash check.",
+    impact: 412_000,
+    confidence: 0.94,
+    category: "Duplicate Payment",
+    actions: ["Enable fuzzy matching", "Quarantine re-uploads", "Notify AP lead"],
+  },
+  {
+    id: "AI-502",
+    title: "Helix Cloud is drifting off the contracted rate card",
+    summary:
+      "Effective unit price has risen 11% while contracted rates are flat. Projected 12-month exposure is $340k if unaddressed.",
+    impact: 340_000,
+    confidence: 0.9,
+    category: "Vendor Overcharge",
+    actions: ["Open recovery case", "Schedule vendor review"],
+  },
+  {
+    id: "AI-503",
+    title: "Subscription sprawl across 4 business units",
+    summary:
+      "Nineteen overlapping SaaS tools with duplicate capability. Consolidation would cut $186k annually with low switching cost.",
+    impact: 186_000,
+    confidence: 0.82,
+    category: "Subscription Waste",
+    actions: ["Generate consolidation plan", "Export to CFO report"],
+  },
+];
+
+export const alerts: AlertItem[] = [
+  {
+    id: "AL-901",
+    title: "Critical: possible split-PO fraud",
+    description: "Cobalt Industrial — 9 POs under threshold in 72 hours.",
+    severity: "critical",
+    time: "12 min ago",
+    category: "Fraud Indicator",
+    read: false,
+  },
+  {
+    id: "AL-902",
+    title: "Duplicate payment blocked pre-release",
+    description: "ACH batch #421 held $148,320 for review.",
+    severity: "high",
+    time: "1 hr ago",
+    category: "Duplicate Payment",
+    read: false,
+  },
+  {
+    id: "AL-903",
+    title: "Contract expiring in 14 days",
+    description: "Atlas Analytics MSA renews at a higher tier automatically.",
+    severity: "medium",
+    time: "3 hrs ago",
+    category: "Contract Violation",
+    read: true,
+  },
+  {
+    id: "AL-904",
+    title: "ERP sync completed",
+    description: "SAP S/4HANA — 128,402 records ingested.",
+    severity: "low",
+    time: "Yesterday",
+    category: "System",
+    read: true,
+  },
+];
+
+export const transactions: Transaction[] = [
+  { id: "TX-772140", date: "2026-08-06", description: "ACH disbursement — freight settlement", vendor: "Northwind Logistics", account: "5100 · Logistics", amount: 148_320, status: "flagged", riskScore: 92 },
+  { id: "TX-772133", date: "2026-08-06", description: "Cloud infrastructure — July usage", vendor: "Helix Cloud Services", account: "6200 · IT Infrastructure", amount: 302_115, status: "posted", riskScore: 61 },
+  { id: "TX-772118", date: "2026-08-05", description: "Consulting retainer", vendor: "Vertex Consulting", account: "6400 · Professional Fees", amount: 42_500, status: "reversed", riskScore: 44 },
+  { id: "TX-772090", date: "2026-08-05", description: "Analytics platform annual true-up", vendor: "Atlas Analytics", account: "6210 · Software", amount: 54_180, status: "pending", riskScore: 55 },
+  { id: "TX-772044", date: "2026-08-04", description: "Industrial parts — PO batch", vendor: "Cobalt Industrial", account: "5300 · Materials", amount: 88_900, status: "flagged", riskScore: 88 },
+  { id: "TX-771998", date: "2026-08-03", description: "Ocean freight surcharge", vendor: "Meridian Freight", account: "5100 · Logistics", amount: 27_650, status: "posted", riskScore: 31 },
+  { id: "TX-771950", date: "2026-08-02", description: "Facilities maintenance", vendor: "Brightline Facilities", account: "6100 · Facilities", amount: 18_240, status: "posted", riskScore: 12 },
+  { id: "TX-771902", date: "2026-08-01", description: "Marketing agency — Q3 sprint", vendor: "Lumen Studio", account: "6600 · Marketing", amount: 76_000, status: "pending", riskScore: 27 },
+];
+
+export const invoices: Invoice[] = [
+  { id: "INV-88213", vendor: "Northwind Logistics", issued: "2026-07-18", due: "2026-08-17", amount: 148_320, tax: 0, status: "disputed", duplicateOf: "INV-88109" },
+  { id: "INV-88190", vendor: "Helix Cloud Services", issued: "2026-07-16", due: "2026-08-15", amount: 302_115, tax: 24_169, status: "approved" },
+  { id: "INV-88154", vendor: "Atlas Analytics", issued: "2026-07-12", due: "2026-08-11", amount: 54_180, tax: 4_334, status: "pending" },
+  { id: "INV-88102", vendor: "Meridian Freight", issued: "2026-07-08", due: "2026-08-07", amount: 61_205, tax: 12_241, status: "overdue" },
+  { id: "INV-88044", vendor: "Vertex Consulting", issued: "2026-07-02", due: "2026-08-01", amount: 42_500, tax: 3_400, status: "paid", duplicateOf: "INV-77120" },
+  { id: "INV-87990", vendor: "Cobalt Industrial", issued: "2026-06-28", due: "2026-07-28", amount: 88_900, tax: 7_112, status: "paid" },
+];
+
+export const payments: Payment[] = [
+  { id: "PMT-55901", invoiceId: "INV-88213", vendor: "Northwind Logistics", method: "ACH", date: "2026-08-04", amount: 148_320, status: "settled", flagged: true },
+  { id: "PMT-55880", invoiceId: "INV-88109", vendor: "Northwind Logistics", method: "ACH", date: "2026-07-29", amount: 148_320, status: "settled", flagged: true },
+  { id: "PMT-55842", invoiceId: "INV-88190", vendor: "Helix Cloud Services", method: "Wire", date: "2026-07-27", amount: 302_115, status: "settled", flagged: false },
+  { id: "PMT-55810", invoiceId: "INV-88154", vendor: "Atlas Analytics", method: "Card", date: "2026-07-25", amount: 54_180, status: "in_flight", flagged: false },
+  { id: "PMT-55788", invoiceId: "INV-88044", vendor: "Vertex Consulting", method: "ACH", date: "2026-07-20", amount: 42_500, status: "reversed", flagged: true },
+  { id: "PMT-55740", invoiceId: "INV-87990", vendor: "Cobalt Industrial", method: "Check", date: "2026-07-14", amount: 88_900, status: "failed", flagged: false },
+];
+
+export const vendors: Vendor[] = [
+  { id: "VN-201", name: "Helix Cloud Services", category: "Cloud & Infrastructure", spendYtd: 2_410_000, leaks: 14, riskScore: 74, contractStatus: "active", country: "United States" },
+  { id: "VN-202", name: "Northwind Logistics", category: "Logistics", spendYtd: 1_860_000, leaks: 9, riskScore: 88, contractStatus: "expiring", country: "Netherlands" },
+  { id: "VN-203", name: "Atlas Analytics", category: "Software", spendYtd: 940_000, leaks: 6, riskScore: 52, contractStatus: "expiring", country: "United Kingdom" },
+  { id: "VN-204", name: "Cobalt Industrial", category: "Manufacturing", spendYtd: 780_000, leaks: 11, riskScore: 91, contractStatus: "active", country: "Germany" },
+  { id: "VN-205", name: "Meridian Freight", category: "Logistics", spendYtd: 655_000, leaks: 4, riskScore: 43, contractStatus: "active", country: "Singapore" },
+  { id: "VN-206", name: "Vertex Consulting", category: "Professional Services", spendYtd: 512_000, leaks: 3, riskScore: 38, contractStatus: "expired", country: "United States" },
+];
+
+export const contracts: Contract[] = [
+  { id: "CT-3001", vendor: "Helix Cloud Services", title: "Master Services Agreement — Cloud", value: 4_800_000, startDate: "2024-01-01", endDate: "2026-12-31", status: "breached", violations: 3 },
+  { id: "CT-3002", vendor: "Northwind Logistics", title: "Freight Rate Agreement", value: 2_200_000, startDate: "2025-03-01", endDate: "2026-08-31", status: "expiring", violations: 1 },
+  { id: "CT-3003", vendor: "Atlas Analytics", title: "Enterprise License — 1,200 seats", value: 1_150_000, startDate: "2025-09-01", endDate: "2026-08-31", status: "expiring", violations: 2 },
+  { id: "CT-3004", vendor: "Cobalt Industrial", title: "Supply Framework Agreement", value: 900_000, startDate: "2026-01-15", endDate: "2027-01-14", status: "active", violations: 0 },
+  { id: "CT-3005", vendor: "Vertex Consulting", title: "Advisory Retainer", value: 480_000, startDate: "2024-06-01", endDate: "2026-05-31", status: "expired", violations: 0 },
+];
+
+export const recoveryCases: RecoveryCase[] = [
+  { id: "RC-7001", vendor: "Northwind Logistics", amount: 148_320, stage: "claim_filed", owner: "Priya Raman", opened: "2026-08-04", progress: 45 },
+  { id: "RC-7002", vendor: "Helix Cloud Services", amount: 96_740, stage: "credit_issued", owner: "Daniel Okafor", opened: "2026-07-30", progress: 80 },
+  { id: "RC-7003", vendor: "Vertex Consulting", amount: 42_500, stage: "recovered", owner: "Priya Raman", opened: "2026-07-24", progress: 100 },
+  { id: "RC-7004", vendor: "Meridian Freight", amount: 61_205, stage: "vendor_contacted", owner: "Sofia Marchetti", opened: "2026-08-01", progress: 60 },
+  { id: "RC-7005", vendor: "Atlas Analytics", amount: 54_180, stage: "identified", owner: "Unassigned", opened: "2026-07-29", progress: 15 },
+];
+
+export const users: AppUser[] = [
+  { id: "U-1", name: "Amara Chen", email: "amara.chen@northgate.com", role: "admin", department: "IT", status: "active", lastActive: "2 min ago", initials: "AC" },
+  { id: "U-2", name: "Daniel Okafor", email: "daniel.okafor@northgate.com", role: "cfo", department: "Finance", status: "active", lastActive: "18 min ago", initials: "DO" },
+  { id: "U-3", name: "Priya Raman", email: "priya.raman@northgate.com", role: "finance_manager", department: "Finance", status: "active", lastActive: "1 hr ago", initials: "PR" },
+  { id: "U-4", name: "Marcus Webb", email: "marcus.webb@northgate.com", role: "accountant", department: "Accounts Payable", status: "active", lastActive: "3 hrs ago", initials: "MW" },
+  { id: "U-5", name: "Sofia Marchetti", email: "sofia.marchetti@northgate.com", role: "procurement_manager", department: "Procurement", status: "active", lastActive: "Yesterday", initials: "SM" },
+  { id: "U-6", name: "Ken Alvarez", email: "ken.alvarez@auditpartners.com", role: "auditor", department: "External Audit", status: "invited", lastActive: "—", initials: "KA" },
+  { id: "U-7", name: "Lena Fischer", email: "lena.fischer@northgate.com", role: "viewer", department: "Operations", status: "suspended", lastActive: "3 weeks ago", initials: "LF" },
+];
+
+export const sessions: SessionRecord[] = [
+  { id: "S-1", device: "MacBook Pro · Chrome 141", location: "Boston, US", ip: "72.14.201.8", lastActive: "Active now", current: true },
+  { id: "S-2", device: "iPhone 17 · Safari", location: "Boston, US", ip: "72.14.201.44", lastActive: "2 hours ago", current: false },
+  { id: "S-3", device: "Windows 11 · Edge", location: "Frankfurt, DE", ip: "185.60.112.9", lastActive: "4 days ago", current: false },
+];
+
+export const activityFeed = [
+  { id: "AF-1", actor: "Priya Raman", action: "filed a recovery claim for", target: "LK-10421", time: "12 min ago" },
+  { id: "AF-2", actor: "AutoAudit AI", action: "detected 6 new leaks in", target: "SAP sync #418", time: "38 min ago" },
+  { id: "AF-3", actor: "Daniel Okafor", action: "approved the Q3 savings report for", target: "Board review", time: "2 hrs ago" },
+  { id: "AF-4", actor: "Sofia Marchetti", action: "flagged vendor", target: "Cobalt Industrial", time: "5 hrs ago" },
+  { id: "AF-5", actor: "Marcus Webb", action: "dismissed anomaly", target: "LK-10265", time: "Yesterday" },
+];
+
+export const integrations = [
+  { id: "IG-1", name: "SAP S/4HANA", category: "ERP", status: "connected", lastSync: "8 min ago", records: "1.2M" },
+  { id: "IG-2", name: "NetSuite", category: "ERP", status: "connected", lastSync: "24 min ago", records: "412K" },
+  { id: "IG-3", name: "Oracle Fusion", category: "ERP", status: "syncing", lastSync: "in progress", records: "188K" },
+  { id: "IG-4", name: "QuickBooks", category: "Accounting", status: "disconnected", lastSync: "—", records: "—" },
+  { id: "IG-5", name: "Coupa", category: "Procurement", status: "connected", lastSync: "1 hr ago", records: "96K" },
+  { id: "IG-6", name: "Stripe", category: "Payments", status: "error", lastSync: "Failed 3 hrs ago", records: "44K" },
+] as const;
+
+export const reports = [
+  { id: "RP-1", name: "Q3 Financial Leakage Summary", type: "Executive", generated: "2026-08-05", size: "2.4 MB", owner: "Daniel Okafor" },
+  { id: "RP-2", name: "Duplicate Payment Register", type: "Operational", generated: "2026-08-04", size: "980 KB", owner: "Priya Raman" },
+  { id: "RP-3", name: "Vendor Risk Scorecard", type: "Risk", generated: "2026-08-02", size: "1.1 MB", owner: "Sofia Marchetti" },
+  { id: "RP-4", name: "Tax Compliance Exceptions", type: "Compliance", generated: "2026-07-30", size: "620 KB", owner: "Ken Alvarez" },
+];
+
+export const currentUser: AppUser = users[1]!;
+
+export const workspaces = [
+  { id: "WS-1", name: "Northgate Holdings", plan: "Enterprise", entities: 14 },
+  { id: "WS-2", name: "Northgate EMEA", plan: "Enterprise", entities: 6 },
+  { id: "WS-3", name: "Kestrel Manufacturing", plan: "Growth", entities: 3 },
+];
