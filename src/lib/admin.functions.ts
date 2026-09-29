@@ -44,11 +44,7 @@ export interface Member {
 export type Ctx = { supabase: SupabaseClient<Database>; userId: string };
 
 export async function roleOf(context: Ctx): Promise<AppRole> {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
-
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await context.supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", context.userId)
