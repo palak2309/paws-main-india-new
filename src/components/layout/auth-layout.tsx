@@ -17,9 +17,9 @@ export function AuthLayout({
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden overflow-hidden lg:block">
-        <div className="gradient-brand absolute inset-0" />
+        <div className="absolute inset-0 bg-secondary" />
         <div className="grid-pattern absolute inset-0 opacity-20" />
-        <div className="relative flex h-full flex-col justify-between p-12 text-primary-foreground">
+        <div className="relative flex h-full flex-col justify-between p-12 text-foreground">
           <Link to="/" className="flex items-center gap-2.5">
             <img src="/logo.png" alt="AutoAudit" className="size-9 rounded-xl object-contain" />
             <span className="text-sm font-semibold">AutoAudit</span>

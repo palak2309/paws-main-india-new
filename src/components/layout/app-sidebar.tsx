@@ -26,7 +26,7 @@ export function BrandMark({ compact }: { compact?: boolean }) {
       {!compact && (
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold tracking-tight">AutoAudit</p>
-          <p className="truncate text-[11px] text-muted-foreground">Financial Leakage AI</p>
+          <p className="truncate text-[11px] text-sidebar-foreground/65">Financial Leakage AI</p>
         </div>
       )}
     </div>
@@ -41,11 +41,11 @@ function WorkspaceSwitcher() {
         <button className="flex w-full items-center gap-2 rounded-xl border border-sidebar-border bg-sidebar-accent/40 px-3 py-2 text-left transition-colors hover:bg-sidebar-accent">
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-semibold">{workspace.name}</p>
-            <p className="truncate text-[11px] text-muted-foreground">
+            <p className="truncate text-[11px] text-sidebar-foreground/65">
               {workspace.plan} · {workspace.entities} entities
             </p>
           </div>
-          <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
+          <ChevronsUpDown className="size-4 shrink-0 text-sidebar-foreground/65" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
@@ -54,7 +54,7 @@ function WorkspaceSwitcher() {
         {workspaces.map((w: WorkspaceInfo) => (
           <DropdownMenuItem key={w.id} onSelect={() => setWorkspaceId(w.id)}>
             <span className="flex-1 truncate">{w.name}</span>
-            <span className="text-xs text-muted-foreground">{w.plan}</span>
+            <span className="text-xs text-sidebar-foreground/65">{w.plan}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -89,7 +89,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       <nav className="flex-1 space-y-5">
         {visibleGroups.map((group) => (
           <div key={group.label}>
-            <p className="px-3 pb-1.5 text-[10px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+            <p className="px-3 pb-1.5 text-[10px] font-semibold tracking-[0.12em] text-sidebar-foreground/65 uppercase">
               {group.label}
             </p>
             <ul className="space-y-0.5">
@@ -111,11 +111,11 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                       {active && (
                         <motion.span
                           layoutId="sidebar-active"
-                          className="gradient-brand absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full"
+                          className="bg-primary absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full"
                         />
                       )}
                       <item.icon
-                        className={cn("size-4 shrink-0", active ? "text-primary" : "text-muted-foreground")}
+                        className={cn("size-4 shrink-0", active ? "text-sidebar-primary" : "text-sidebar-foreground/65")}
                       />
                       <span className="min-w-0 flex-1 truncate">{item.label}</span>
                       {item.badge && (
@@ -137,7 +137,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           <Sparkles className="size-4 text-violet animate-pulse" />
           <p className="text-xs font-semibold">AI Scan active</p>
         </div>
-        <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="mt-1.5 text-[11px] leading-relaxed text-sidebar-foreground/65">
           {activeCount > 0
             ? `${activeCount} leaks awaiting triage (${currency(exposure, { currency: metrics?.currency || "USD" })}).`
             : "Ledger continuous monitoring active. No unaddressed risks."}
@@ -149,7 +149,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </Button>
       </div>
 
-      <div className="pt-2 px-1 text-[11px] text-muted-foreground flex flex-wrap gap-x-2 gap-y-1">
+      <div className="pt-2 px-1 text-[11px] text-sidebar-foreground/65 flex flex-wrap gap-x-2 gap-y-1">
         <Link to="/privacy-policy" onClick={onNavigate} className="hover:text-foreground underline">Privacy</Link>
         <span>•</span>
         <Link to="/terms-and-conditions" onClick={onNavigate} className="hover:text-foreground underline">Terms</Link>
