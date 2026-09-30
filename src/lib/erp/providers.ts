@@ -1,6 +1,6 @@
 // Client-safe provider registry. No secrets here.
 
-export type ErpProviderId = "xero" | "quickbooks" | "zoho_books" | "netsuite" | "sap" | "oracle" | "custom_api";
+export type ErpProviderId = "xero" | "quickbooks" | "zoho_books" | "file_import" | "netsuite" | "sap" | "oracle" | "custom_api";
 
 export interface ErpProviderMeta {
   id: ErpProviderId;
@@ -36,6 +36,14 @@ export const ERP_PROVIDERS: ErpProviderMeta[] = [
     blurb: "Invoices, bills, payments and contacts from your Zoho Books organisation.",
     oauth: true,
     docsUrl: "https://api-console.zoho.com/",
+  },
+  {
+    id: "file_import",
+    name: "CSV / Excel Import",
+    category: "Accounting",
+    blurb: "Upload invoices, payments or vendor ledgers from CSV or Excel files for audit analysis.",
+    oauth: false,
+    docsUrl: "https://docs.sheetjs.com/",
   },
   {
     id: "custom_api",
